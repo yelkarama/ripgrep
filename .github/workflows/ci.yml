@@ -3,7 +3,7 @@ on:
   pull_request:
   push:
     branches:
-    - master
+    - '*'
   schedule:
   - cron: '00 01 * * *'
 
@@ -46,6 +46,8 @@ jobs:
       CROSS_VERSION: v0.2.5
       # Emit backtraces on panics.
       RUST_BACKTRACE: 1
+      # Build static release binaries and auto strip them
+      RUSTFLAGS: -C target-feature=+crt-static
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -54,15 +56,19 @@ jobs:
         - build: pinned
           os: ubuntu-latest
           rust: 1.74.0
+          target: x86_64-unknown-linux-gnu
         - build: stable
           os: ubuntu-latest
           rust: stable
+          target: x86_64-unknown-linux-gnu
         - build: beta
           os: ubuntu-latest
           rust: beta
+          target: x86_64-unknown-linux-gnu
         - build: nightly
           os: ubuntu-latest
           rust: nightly
+          target: x86_64-unknown-linux-gnu
         - build: stable-musl
           os: ubuntu-latest
           rust: stable
